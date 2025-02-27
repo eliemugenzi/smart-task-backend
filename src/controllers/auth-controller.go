@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"smart-task-backend/src/db/models"
 	"smart-task-backend/src/dto"
 	"smart-task-backend/src/services"
 	"smart-task-backend/src/utils"
@@ -23,6 +24,12 @@ type authController struct {
 	logger      *utils.Logger
 }
 
+type LoginResponse struct {
+	AccessToken  string      `json:"access_token"`
+	RefreshToken string      `json:"refresh_token"`
+	User         models.User `json:"user"`
+}
+
 func NewAuthController(authService services.AuthService, jwtService services.JwtService, logger *utils.Logger) *authController {
 	return &authController{
 		authService: authService,
@@ -42,9 +49,16 @@ func (this_ *authController) Login(context *gin.Context) {
 
 	isValidCredential, userId := this_.authService.VerifyCredential(loginDto)
 
+	user := this_.authService.FindUserByEmail(loginDto.Email)
+
 	if isValidCredential {
 		tokenPair := this_.jwtService.GenerateTokenPair(userId)
-		context.JSON(http.StatusOK, utils.GetResponse(http.StatusOK, "Login successful...", tokenPair))
+
+		context.JSON(http.StatusOK, utils.GetResponse(http.StatusOK, "Login successful...", &LoginResponse{
+			AccessToken:  tokenPair["access_token"],
+			RefreshToken: tokenPair["refresh_token"],
+			User:         user,
+		}))
 		return
 	}
 
