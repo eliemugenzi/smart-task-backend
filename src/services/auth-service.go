@@ -14,6 +14,7 @@ type AuthService interface {
 	Register(userDto dto.User) (*gorm.DB, models.User)
 	VerifyCredential(loginDto dto.Login) (bool, uint64)
 	FindUserByEmail(email string) models.User
+	GetUsers() []models.User
 }
 
 type authService struct {
@@ -52,4 +53,10 @@ func (this_ *authService) VerifyCredential(loginDto dto.Login) (bool, uint64) {
 		return comparePassword([]byte(user.Password), []byte(loginDto.Password)), uint64(user.ID)
 	}
 	return false, 0
+}
+
+func (this_ *authService) GetUsers() []models.User {
+	_, users := this_.authRepo.GetUsers()
+
+	return users
 }

@@ -14,6 +14,8 @@ func RootRoute(db *gorm.DB, router *gin.Engine, logger *utils.Logger) {
 
 	// Auth router config
 	authRouter := apiRouter.Group("/auth")
+	taskRouter := apiRouter.Group("/tasks")
 	AuthRoute(db, authRouter, logger)
+	TaskRoute(db, taskRouter, logger)
 
 }

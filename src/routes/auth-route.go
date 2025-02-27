@@ -22,4 +22,5 @@ func AuthRoute(db *gorm.DB, authRouter *gin.RouterGroup, logger *utils.Logger) {
 	authRouter.POST("/signup", authController.Register)
 	authRouter.POST("/token/verify", authController.VerifyToken)
 	authRouter.POST("/token/refresh", authController.RefreshToken)
+	authRouter.GET("/users", authController.GetUsers)
 }

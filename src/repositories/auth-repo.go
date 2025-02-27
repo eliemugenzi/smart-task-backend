@@ -11,6 +11,7 @@ type AuthRepo interface {
 	Register(user models.User) (*gorm.DB, models.User)
 	FindByEmail(email string) (*gorm.DB, models.User)
 	FindById(id uint) (*gorm.DB, models.User)
+	GetUsers() (*gorm.DB, []models.User)
 }
 
 type authRepo struct {
@@ -37,6 +38,12 @@ func (this_ *authRepo) FindById(id uint) (*gorm.DB, models.User) {
 	var user models.User
 	userResult := this_.db.First(&user, id)
 	return userResult, user
+}
+
+func (this_ *authRepo) GetUsers() (*gorm.DB, []models.User) {
+	var users []models.User
+	usersResult := this_.db.Find(&users)
+	return usersResult, users
 }
 
 func hashSalt(password string) string {

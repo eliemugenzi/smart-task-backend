@@ -16,6 +16,7 @@ type AuthController interface {
 	Login(context *gin.Context)
 	VerifyToken(context *gin.Context)
 	RefreshToken(context *gin.Context)
+	GetUsers(context *gin.Context)
 }
 
 type authController struct {
@@ -162,6 +163,8 @@ func (this_ *authController) RefreshToken(context *gin.Context) {
 				this_.jwtService.GenerateTokenPair(claims["user_id"])),
 		)
 	} else {
+		this_.logger.Error("Failed to claim a token")
+
 		context.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			utils.GetResponse(
@@ -170,7 +173,11 @@ func (this_ *authController) RefreshToken(context *gin.Context) {
 				nil,
 			),
 		)
-
-		this_.logger.Error("Failed to claim a token")
 	}
+}
+
+func (this_ *authController) GetUsers(context *gin.Context) {
+	users := this_.authService.GetUsers()
+
+	context.JSON(http.StatusOK, utils.GetResponse(http.StatusOK, "Users fetched...", users))
 }

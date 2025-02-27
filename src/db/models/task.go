@@ -1,17 +1,23 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type Task struct {
-	ID          uint   `gorm:"primaryKey,autoIncrement" json:"id"`
-	Title       string `gorm:"not null" json:"title"`
-	Description string `gorm:"not null" json:"description"`
-	UserId      uint   `gorm:"not null" json:"user_id"`
-	Status      string `gorm:"not null" json:"status"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedBy   User   `gorm:"foreignKey:UserId" json:"user"`
-	Assignees   []User `gorm:"many2many:task_assignees" json:"assignees"`
+	ID             uint      `gorm:"primaryKey,autoIncrement" json:"id"`
+	Title          string    `gorm:"not null" json:"title"`
+	Description    string    `gorm:"not null" json:"description"`
+	UserId         uint      `gorm:"not null" json:"user_id"`
+	Status         string    `gorm:"not null" json:"status"`
+	Priority       string    `gorm:"not null" json:"priority"`
+	Tags           []string  `gorm:"type:text" json:"tags"`
+	CompletionDate time.Time `gorm:"type:timestamp,not null" json:"completion_date"`
+	CreatedAt      string    `json:"created_at"`
+	UpdatedAt      string    `json:"updated_at"`
+	CreatedBy      User      `gorm:"foreignKey:UserId" json:"user"`
+	Assignees      []User    `gorm:"many2many:task_assignees" json:"assignees"`
 }
 
 func (this_ *Task) ToString() string {
