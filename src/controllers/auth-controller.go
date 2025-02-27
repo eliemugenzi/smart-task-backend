@@ -102,12 +102,18 @@ func (this_ *authController) Register(context *gin.Context) {
 		return
 	}
 
+	tokenPair := this_.jwtService.GenerateTokenPair(user.ID)
+
 	context.JSON(
 		http.StatusCreated,
 		utils.GetResponse(
 			http.StatusCreated,
 			"A user has been successfully created",
-			user),
+			&LoginResponse{
+				User:         user,
+				AccessToken:  tokenPair["access_token"],
+				RefreshToken: tokenPair["refresh_token"],
+			}),
 	)
 }
 
